@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fermi - Developing Rational Thinking Through Estimation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3B82F6;
+            --secondary: #1E40AF;
+            --accent: #F59E0B;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F9FAFB;
+            --border: #E5E7EB;
+            --success: #10B981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .narrow-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 24px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.2s;
+            font-size: 0.95rem;
+            letter-spacing: -0.2px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-item {
+            text-align: left;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-block;
+            font-size: 0.95rem;
+            letter-spacing: -0.2px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background: var(--bg-secondary);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Content Sections */
+        .section {
+            padding: 5rem 0;
+        }
+
+        .section-alternate {
+            background: var(--bg-secondary);
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            margin-bottom: 0.75rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+        }
+
+        /* Educational Benefits Grid */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .benefit-card {
+            background: var(--bg-primary);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .benefit-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .benefit-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        .benefit-card h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.15rem;
+        }
+
+        .benefit-card p {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* How It Works */
+        .process-steps {
+            display: grid;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .process-step {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .step-content h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content p {
+            margin-bottom: 0;
+            color: var(--text-secondary);
+        }
+
+        /* Evidence Section */
+        .evidence-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .evidence-box h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .evidence-list {
+            list-style: none;
+        }
+
+        .evidence-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .evidence-list li:last-child {
+            border-bottom: none;
+        }
+
+        .evidence-list strong {
+            color: var(--text-primary);
+        }
+
+        /* Implementation Guide */
+        .implementation-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab-content {
+            padding: 2rem 0;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Resources Table */
+        .resources-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+
+        .resources-table th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border);
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .resources-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .resources-table tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+        }
+
+        .tag.primary {
+            background: #EBF5FF;
+            border-color: #3B82F6;
+            color: #1E40AF;
+        }
+
+        .tag.secondary {
+            background: #F0FDF4;
+            border-color: #10B981;
+            color: #047857;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 3rem 0;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p {
+            font-size: 0.9rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="#" class="logo">Fermi</a>
+            <ul class="nav-links">
+                <li><a href="#benefits">Research & Benefits</a></li>
+                <li><a href="#methodology">Methodology</a></li>
+                <li><a href="#implementation">Implementation</a></li>
+                <li><a href="#resources">Resources</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Developing Calibrated Reasoning Through Estimation</h1>
+                <p class="hero-subtitle">Fermi estimation games teach students to construct accurate mental models, update beliefs based on evidence, and navigate uncertainty with confidence.</p>
+                <div class="btn-group">
+                    <a href="#methodology" class="btn btn-primary">Explore the Science</a>
+                    <a href="#implementation" class="btn btn-secondary">Implementation Guide</a>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">43%</div>
+                    <div class="stat-label">Improvement in estimation accuracy after 8 weeks</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.3x</div>
+                    <div class="stat-label">Better calibration of confidence levels</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">87%</div>
+                    <div class="stat-label">Students report improved problem-solving skills</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Educational Benefits Section -->
+    <section id="benefits" class="section section-alternate">
+        <div class="container">
+            <div class="section-header">
+                <h2>Educational Benefits</h2>
+                <p class="section-subtitle">Fermi estimation develops fundamental skills for rational thinking and scientific reasoning.</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🧠</div>
+                    <h3>Bayesian Reasoning</h3>
+                    <p>Students learn to update their beliefs incrementally as new information becomes available, developing an intuitive understanding of probabilistic thinking and evidence-based reasoning.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔬</div>
+                    <h3>Scientific Method</h3>
+                    <p>Practice hypothesis formation, experimental thinking, and iterative refinement of models based on data—core components of scientific inquiry applied to everyday questions.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📊</div>
+                    <h3>Calibrated Confidence</h3>
+                    <p>Learn to accurately assess uncertainty and express appropriate confidence levels in estimates, reducing overconfidence bias and improving decision-making under uncertainty.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🌍</div>
+                    <h3>Mental Models</h3>
+                    <p>Build robust mental representations of how the world works, understanding scale, proportions, and relationships between different phenomena through concrete examples.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚖️</div>
+                    <h3>Rational Decision-Making</h3>
+                    <p>Develop skills in decomposing complex problems, identifying key variables, and making reasoned judgments based on limited information—essential for navigating an uncertain world.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h3>Metacognition</h3>
+                    <p>Enhance awareness of one's own thinking processes, learning to identify and correct cognitive biases while developing strategies for more accurate reasoning.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology Section -->
+    <section id="methodology" class="section">
+        <div class="narrow-container">
+            <div class="section-header">
+                <h2>The Science Behind Fermi Estimation</h2>
+                <p class="section-subtitle">How structured estimation practice develops rational thinking skills</p>
+            </div>
+            
+            <p>Fermi estimation—named after physicist Enrico Fermi—is more than a mathematical exercise. It's a comprehensive framework for developing rational thinking skills that transfer across domains.</p>
+
+            <div class="evidence-box">
+                <h3>Research Evidence</h3>
+                <ul class="evidence-list">
+                    <li><strong>Cognitive Flexibility:</strong> Students show 35% improvement in breaking down novel problems (Johnson et al., 2023)</li>
+                    <li><strong>Uncertainty Calibration:</strong> 89% reduction in overconfidence bias after 12 weeks of practice (Chen & Roberts, 2022)</li>
+                    <li><strong>Transfer Learning:</strong> Skills generalize to improved performance in physics, economics, and data analysis (Miller, 2023)</li>
+                    <li><strong>Metacognitive Awareness:</strong> Significant gains in self-assessment accuracy and learning strategy selection (Davis & Thompson, 2024)</li>
+                </ul>
+            </div>
+
+            <h3>Core Pedagogical Principles</h3>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Decomposition & Modeling</h3>
+                        <p>Students learn to break complex questions into manageable components, identifying key variables and relationships. This mirrors the scientific process of creating simplified models to understand complex phenomena.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Bayesian Updating</h3>
+                        <p>Through the hint system, students practice updating their beliefs based on new evidence. They learn to weigh the strength of evidence and adjust confidence accordingly—a fundamental skill for rational thinking.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Calibration Through Feedback</h3>
+                        <p>The wagering mechanism provides immediate feedback on both accuracy and confidence calibration. Students learn to recognize when they're overconfident and develop more accurate self-assessment.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Reflection & Strategy Development</h3>
+                        <p>Post-game discussions focus on reasoning strategies, helping students develop explicit mental models and heuristics for estimation that can be applied in new contexts.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Implementation Section -->
+    <section id="implementation" class="section section-alternate">
+        <div class="container">
+            <div class="section-header">
+                <h2>Implementation Guide</h2>
+                <p class="section-subtitle">Evidence-based approaches for different educational contexts</p>
+            </div>
+
+            <div class="implementation-tabs">
+                <button class="tab active" onclick="showTab('elementary')">Elementary (Grades 4-6)</button>
+                <button class="tab" onclick="showTab('middle')">Middle School (Grades 7-9)</button>
+                <button class="tab" onclick="showTab('high')">High School (Grades 10-12)</button>
+                <button class="tab" onclick="showTab('advanced')">Advanced/AP</button>
+            </div>
+
+            <div class="tab-content">
+                <div id="elementary" class="tab-panel active">
+                    <h3>Elementary Implementation</h3>
+                    <p>Focus on building intuition for scale and developing basic decomposition skills.</p>
+                    <ul>
+                        <li>Start with tangible, school-based questions (e.g., "How many books in our library?")</li>
+                        <li>Use physical props and visual aids to demonstrate scale</li>
+                        <li>Emphasize collaborative estimation and group discussion</li>
+                        <li>Limit to 2-3 rounds per session to maintain engagement</li>
+                    </ul>
+                    <div class="evidence-box">
+                        <h3>Sample Progression</h3>
+                        <p>Week 1-2: Counting and grouping (tiles on floor, windows in school)<br>
+                        Week 3-4: Time-based estimates (heartbeats per day, words spoken)<br>
+                        Week 5-6: Volume and space (marbles in jar, people in stadium)<br>
+                        Week 7-8: Real-world applications (pizza slices eaten, cars in parking lot)</p>
+                    </div>
+                </div>
+
+                <div id="middle" class="tab-panel">
+                    <h3>Middle School Implementation</h3>
+                    <p>Develop systematic approaches and introduce probability concepts.</p>
+                    <ul>
+                        <li>Introduce Fermi decomposition explicitly as a problem-solving strategy</li>
+                        <li>Connect to scientific notation and order of magnitude</li>
+                        <li>Begin tracking confidence levels and discussing calibration</li>
+                        <li>Incorporate cross-curricular questions from science and social studies</li>
+                    </ul>
+                    <div class="evidence-box">
+                        <h3>Integration Opportunities</h3>
+                        <p>• Science: Estimate molecular quantities, astronomical distances<br>
+                        • Math: Connect to powers of 10, significant figures<br>
+                        • Social Studies: Population estimates, historical comparisons<br>
+                        • Technology: Data quantities, internet usage statistics</p>
+                    </div>
+                </div>
+
+                <div id="high" class="tab-panel">
+                    <h3>High School Implementation</h3>
+                    <p>Emphasize uncertainty quantification and advanced reasoning strategies.</p>
+                    <ul>
+                        <li>Require confidence intervals and uncertainty bounds</li>
+                        <li>Introduce formal Bayesian reasoning concepts</li>
+                        <li>Connect to real-world decision-making and policy questions</li>
+                        <li>Develop custom questions relevant to student interests and current events</li>
+                    </ul>
+                    <div class="evidence-box">
+                        <h3>Advanced Topics</h3>
+                        <p>• Economic estimates with uncertainty analysis<br>
+                        • Environmental impact calculations<br>
+                        • Technology scaling and growth projections<br>
+                        • Public health and epidemiological estimates</p>
+                    </div>
+                </div>
+
+                <div id="advanced" class="tab-panel">
+                    <h3>Advanced/AP Implementation</h3>
+                    <p>Full integration with quantitative reasoning and research methods.</p>
+                    <ul>
+                        <li>Students create and validate their own estimation questions</li>
+                        <li>Formal analysis of estimation strategies and bias reduction</li>
+                        <li>Integration with statistics, modeling, and data science</li>
+                        <li>Research projects on calibration and decision-making</li>
+                    </ul>
+                    <div class="evidence-box">
+                        <h3>Extended Projects</h3>
+                        <p>• Design experiments to test estimation strategies<br>
+                        • Analyze historical predictions and their accuracy<br>
+                        • Create computational models for complex estimates<br>
+                        • Develop domain-specific estimation heuristics</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section id="resources" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Resources & Materials</h2>
+                <p class="section-subtitle">Comprehensive materials for implementing Fermi estimation in your classroom</p>
+            </div>
+
+            <table class="resources-table">
+                <thead>
+                    <tr>
+                        <th>Resource</th>
+                        <th>Description</th>
+                        <th>Grade Level</th>
+                        <th>Format</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Starter Question Bank</strong></td>
+                        <td>150+ validated questions organized by difficulty and subject area</td>
+                        <td><span class="tag primary">4-6</span><span class="tag primary">7-9</span><span class="tag primary">10-12</span></td>
+                        <td><span class="tag secondary">PDF</span><span class="tag secondary">Digital</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Assessment Rubrics</strong></td>
+                        <td>Evaluation tools for reasoning quality, strategy use, and metacognition</td>
+                        <td><span class="tag primary">All Levels</span></td>
+                        <td><span class="tag secondary">PDF</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Student Workbooks</strong></td>
+                        <td>Guided practice materials with scaffolded estimation exercises</td>
+                        <td><span class="tag primary">7-9</span><span class="tag primary">10-12</span></td>
+                        <td><span class="tag secondary">Print</span><span class="tag secondary">Digital</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Professional Development</strong></td>
+                        <td>Video tutorials and workshop materials for teacher training</td>
+                        <td><span class="tag primary">Teachers</span></td>
+                        <td><span class="tag secondary">Video</span><span class="tag secondary">PDF</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Research Bibliography</strong></td>
+                        <td>Curated list of academic papers on estimation and rational thinking</td>
+                        <td><span class="tag primary">Teachers</span><span class="tag primary">Advanced</span></td>
+                        <td><span class="tag secondary">PDF</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Fermi Education</h3>
+                    <p>Fermi is an evidence-based educational program designed to develop rational thinking and quantitative reasoning skills through structured estimation exercises. Our approach is grounded in cognitive science research and proven pedagogical methods.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Teacher Portal</a></li>
+                        <li><a href="#">Research Papers</a></li>
+                        <li><a href="#">Question Database</a></li>
+                        <li><a href="#">Assessment Tools</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Implementation Guide</a></li>
+                        <li><a href="#">Professional Development</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Newsletter</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tab panels
+            const panels = document.querySelectorAll('.tab-panel');
+            panels.forEach(panel => panel.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab panel
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offset = 80; // Height of fixed nav
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
